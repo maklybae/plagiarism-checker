@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package analysis;
+
+option go_package = "github.com/maklybae/plagiarism-checker/genproto/go/analysis";
+
+import "common/common.proto";
+
+message FileStatistics {
+  uint64 total_lines = 1;
+  uint64 total_words = 2;
+  uint64 total_characters = 3;
+}
+
+message SingleFileAnalysisRequest { common.UUID file_id = 1; }
+
+message SingleFileAnalysisResponse {
+  common.UUID file_id = 1;
+  FileStatistics statistics = 2;
+  repeated common.UUID exact_matches = 3;
+}
+
+message DiffFileAnalysisRequest {
+  common.UUID file_id_a = 1;
+  common.UUID file_id_b = 2;
+}
+
+message DiffFileAnalysisResponse {
+  common.UUID file_id_a = 1;
+  common.UUID file_id_b = 2;
+  double similarity = 3;
+}
+
+message WordCloudRequest { common.UUID file_id = 1; }
+
+message WordCloudResponse { common.FileChunk file = 2; }
+
+service AnalysisService {
+  rpc SingleFileAnalysis(SingleFileAnalysisRequest)
+      returns (SingleFileAnalysisResponse);
+  rpc DiffFileAnalysis(DiffFileAnalysisRequest)
+      returns (DiffFileAnalysisResponse);
+  rpc WordCloud(WordCloudRequest) returns (WordCloudResponse);
+}

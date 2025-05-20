@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package storage;
+
+option go_package = "github.com/maklybae/plagiarism-checker/genproto/go/storage";
+
+import "common/common.proto";
+
+message UploadFileRequest { common.FileChunk file = 1; }
+
+message UploadFileResponse { common.UUID file_id = 1; }
+
+message DownloadFileRequest { common.UUID file_id = 1; }
+
+message DownloadFileResponse { common.FileChunk file = 2; }
+
+service StorageService {
+  rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse);
+  rpc DownloadFile(DownloadFileRequest) returns (stream DownloadFileResponse);
+}
