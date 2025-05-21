@@ -1,0 +1,59 @@
+services:
+  analysis:
+    build:
+      context: ./analysis
+      dockerfile: Dockerfile
+    depends_on:
+      - analysis_db
+    env_file:
+      - ./analysis/.env
+    ports:
+      - "8081:8080"
+    profiles: [ "analysis-only", "prod" ]
+
+  analysis_db:
+    image: postgres:16
+    env_file:
+      - ./analysis/.env.db
+    ports:
+      - "5433:5432"
+    volumes:
+      - analysis_db_data:/var/lib/postgresql/data
+    profiles: [ "db-only", "analysis-only", "prod" ]
+
+  storage:
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
+    depends_on:
+      - storage_db
+    env_file:
+      - ./storage/.env
+    ports:
+      - "8082:8080"
+    profiles: [ "storage-only", "prod" ]
+
+  storage_db:
+    image: postgres:16
+    env_file:
+      - ./storage/.env.db
+    ports:
+      - "5434:5432"
+    volumes:
+      - storage_db_data:/var/lib/postgresql/data
+    profiles: [ "db-only", "storage-only", "prod" ]
+
+  grpcgw:
+    build:
+      context: ./grpcgw
+      dockerfile: Dockerfile
+    depends_on:
+      - analysis
+      - storage
+    ports:
+      - "8080:8080"
+    profiles: [ "prod" ]
+
+volumes:
+  analysis_db_data:
+  storage_db_data:
