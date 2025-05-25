@@ -9,7 +9,7 @@ services:
       - ./analysis/.env
     ports:
       - "8081:50051"
-    profiles: [ "analysis-only", "prod" ]
+    profiles: [ "analysis-only", "prod", "grpc-only" ]
 
   analysis_db:
     image: postgres:16
@@ -19,7 +19,7 @@ services:
       - "5433:5432"
     volumes:
       - analysis_db_data:/var/lib/postgresql/data
-    profiles: [ "db-only", "analysis-only", "prod" ]
+    profiles: [ "db-only", "analysis-only", "prod", "grpc-only" ]
 
   storage:
     build:
@@ -31,7 +31,7 @@ services:
       - ./storage/.env
     ports:
       - "8082:50051"
-    profiles: [ "storage-only", "prod" ]
+    profiles: [ "storage-only", "prod", "grpc-only" ]
 
   storage_db:
     image: postgres:16
@@ -41,7 +41,7 @@ services:
       - "5434:5432"
     volumes:
       - storage_db_data:/var/lib/postgresql/data
-    profiles: [ "db-only", "storage-only", "prod" ]
+    profiles: [ "db-only", "storage-only", "prod", "grpc-only" ]
 
   grpcgw:
     build:

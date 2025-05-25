@@ -6,8 +6,10 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/maklybae/plagiarism-checker/storage/internal/application"
 	"github.com/maklybae/plagiarism-checker/storage/internal/domain"
 )
 
@@ -51,6 +53,13 @@ func (r *Repository) GetFileByID(ctx context.Context, id uuid.UUID) (file *domai
 
 	file = &domain.FileInfo{}
 	if err := row.Scan(&file.ID, &file.Path, &file.Hash); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, &application.FileNotFoundError{
+				ID:  id,
+				Err: fmt.Errorf("file not found"),
+			}
+		}
+
 		return nil, fmt.Errorf("failed to scan row: %w", err)
 	}
 

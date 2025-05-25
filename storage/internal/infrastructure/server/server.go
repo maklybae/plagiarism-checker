@@ -77,6 +77,11 @@ func (s *StorageServer) DownloadFile(
 
 	stream, err := s.service.DownloadFile(serverStream.Context(), id)
 	if err != nil {
+		var zero *application.FileNotFoundError
+		if errors.As(err, &zero) {
+			return status.Error(codes.NotFound, "file not found")
+		}
+
 		return status.Errorf(codes.Internal, "failed to download file: %v", err)
 	}
 
@@ -116,6 +121,11 @@ func (s *StorageServer) GetFileHash(ctx context.Context, req *types.GetFileHashR
 
 	hash, err := s.service.GetFileInfo(ctx, id)
 	if err != nil {
+		var zero *application.FileNotFoundError
+		if errors.As(err, &zero) {
+			return nil, status.Error(codes.NotFound, "file not found")
+		}
+
 		return nil, status.Errorf(codes.Internal, "failed to get file hash: %v", err)
 	}
 

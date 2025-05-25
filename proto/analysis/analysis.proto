@@ -40,5 +40,7 @@ service AnalysisService {
       returns (SingleFileAnalysisResponse);
   rpc DiffFileAnalysis(DiffFileAnalysisRequest)
       returns (DiffFileAnalysisResponse);
+  // Consider that file in WordCloudResponse is not so large, so no need for
+  // streaming.
   rpc WordCloud(WordCloudRequest) returns (WordCloudResponse);
 }
