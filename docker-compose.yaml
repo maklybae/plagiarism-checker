@@ -45,8 +45,8 @@ services:
 
   grpcgw:
     build:
-      context: ./grpcgw
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: grpcgw/Dockerfile
     depends_on:
       - analysis
       - storage
