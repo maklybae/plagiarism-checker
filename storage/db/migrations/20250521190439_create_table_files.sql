@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE files IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS files (
     id   UUID PRIMARY KEY,
     path TEXT NOT NULL,
     hash TEXT NOT NULL
