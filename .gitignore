@@ -23,7 +23,8 @@ go.work
 go.work.sum
 
 # env file
-*.env*
+# Uncomment the following line if you are using an env file
+# *.env*
 
 # workspace
 .vscode
