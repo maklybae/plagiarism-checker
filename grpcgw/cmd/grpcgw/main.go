@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/maklybae/plagiarism-checker/genproto/go/analysis"
 	"github.com/maklybae/plagiarism-checker/genproto/go/storage"
+	"github.com/maklybae/plagiarism-checker/grpcgw/internal/config"
 	"github.com/maklybae/plagiarism-checker/grpcgw/internal/server"
 	"github.com/maklybae/plagiarism-checker/grpcgw/internal/types"
 	"google.golang.org/grpc"
@@ -19,11 +20,11 @@ import (
 )
 
 func main() {
-	time.Sleep(10 * time.Second) // Wait for the services to be ready
+	cfg := config.NewConfig()
 
 	// gRPC clients setup
 	analysisConn, err := grpc.NewClient(
-		"analysis:50051",
+		cfg.AnalysisGRPCAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -32,7 +33,7 @@ func main() {
 	defer analysisConn.Close()
 
 	storageConn, err := grpc.NewClient(
-		"storage:50051",
+		cfg.StorageGRPCAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -60,7 +61,7 @@ func main() {
 		Handler:      r,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
-		Addr:         ":8080",
+		Addr:         cfg.ListenAddr(),
 	}
 
 	go func() {

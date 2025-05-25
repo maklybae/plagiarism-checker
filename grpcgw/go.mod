@@ -3,6 +3,7 @@ module github.com/maklybae/plagiarism-checker/grpcgw
 go 1.24.3
 
 require (
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/gin-gonic/gin v1.10.1
 	github.com/maklybae/plagiarism-checker/genproto/go v0.0.0-00010101000000-000000000000
 	github.com/oapi-codegen/runtime v1.1.1

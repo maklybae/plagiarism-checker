@@ -2,20 +2,20 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/maklybae/plagiarism-checker/analysis/db"
 	"github.com/maklybae/plagiarism-checker/analysis/internal/application"
+	"github.com/maklybae/plagiarism-checker/analysis/internal/config"
 	"github.com/maklybae/plagiarism-checker/analysis/internal/infrastructure/repository/postgres"
 	"github.com/maklybae/plagiarism-checker/analysis/internal/infrastructure/server"
-	wordcloudclient "github.com/maklybae/plagiarism-checker/analysis/internal/infrastructure/wordcloudclient"
-	wordcloudstorage "github.com/maklybae/plagiarism-checker/analysis/internal/infrastructure/wordcloudclient"
+	"github.com/maklybae/plagiarism-checker/analysis/internal/infrastructure/wordcloud"
 	pb "github.com/maklybae/plagiarism-checker/genproto/go/analysis"
 	storagepb "github.com/maklybae/plagiarism-checker/genproto/go/storage"
 	"google.golang.org/grpc"
@@ -23,10 +23,9 @@ import (
 )
 
 func main() {
-	time.Sleep(5 * time.Second) // Wait for the database to be ready
-	dsn := "postgres://postgres:postgres@analysis_db:5432/analysis?sslmode=disable"
+	config := config.NewConfig()
 
-	connConfig, err := pgxpool.ParseConfig(dsn)
+	connConfig, err := pgxpool.ParseConfig(config.DSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,14 +38,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
+	defer pool.Close()
+
+	if err := pool.Ping(ctx); err != nil {
+		log.Fatalf("Failed to ping database: %v\n", err)
+	}
 
 	repo := postgres.NewRepository(pool)
-	wordcloudClient := wordcloudclient.NewClient()
-	wordcloudStore := wordcloudstorage.NewStorage()
+	wordcloudClient := wordcloud.NewClient()
+	wordcloudStore := wordcloud.NewStorage()
 
 	// gRPC-клиент к storage
 	storageConn, err := grpc.NewClient(
-		"storage:50051",
+		config.StorageGRPCAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -55,20 +59,20 @@ func main() {
 	defer storageConn.Close()
 
 	storageClient := storagepb.NewStorageServiceClient(storageConn)
-
 	service := application.NewService(repo, wordcloudClient, wordcloudStore, storageClient)
 
+	// Listen all interfaces (debug mode to accept all connections) on port 50051.
+	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", "", config.Port))
+	if err != nil {
+		log.Fatalf("Failed to listen on port 50051: %v\n", err)
+	}
+
+	grpcServer := grpc.NewServer()
+	serverImpl := server.NewAnalysisServer(service)
+
+	pb.RegisterAnalysisServiceServer(grpcServer, serverImpl)
+
 	go func() {
-		listener, err := net.Listen("tcp", ":50051")
-		if err != nil {
-			log.Fatalf("Failed to listen on port 50051: %v\n", err)
-		}
-
-		grpcServer := grpc.NewServer()
-		serverImpl := server.NewAnalysisServer(service)
-
-		pb.RegisterAnalysisServiceServer(grpcServer, serverImpl)
-
 		if err := grpcServer.Serve(listener); err != nil {
 			log.Fatalf("Failed to serve gRPC server: %v\n", err)
 		}
@@ -78,5 +82,7 @@ func main() {
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
 
 	<-stop
+	grpcServer.GracefulStop()
+
 	log.Println("Received shutdown signal, stopping analysis server...")
 }

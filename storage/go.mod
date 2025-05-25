@@ -4,6 +4,7 @@ go 1.24.3
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/maklybae/plagiarism-checker/genproto/go v0.0.0-00010101000000-000000000000

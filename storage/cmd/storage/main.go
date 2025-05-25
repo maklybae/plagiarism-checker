@@ -2,17 +2,18 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	types "github.com/maklybae/plagiarism-checker/genproto/go/storage"
 	"github.com/maklybae/plagiarism-checker/storage/db"
 	"github.com/maklybae/plagiarism-checker/storage/internal/application"
+	"github.com/maklybae/plagiarism-checker/storage/internal/config"
 	"github.com/maklybae/plagiarism-checker/storage/internal/infrastructure/hash"
 	"github.com/maklybae/plagiarism-checker/storage/internal/infrastructure/repository/postgres"
 	"github.com/maklybae/plagiarism-checker/storage/internal/infrastructure/server"
@@ -21,10 +22,8 @@ import (
 )
 
 func main() {
-	time.Sleep(5 * time.Second) // Wait for the database to be ready
-	dsn := "postgres://postgres:postgres@storage_db:5432/storage?sslmode=disable"
-
-	connConfig, err := pgxpool.ParseConfig(dsn)
+	cfg := config.NewConfig()
+	connConfig, err := pgxpool.ParseConfig(cfg.DSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,21 +36,27 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
+	defer pool.Close()
+
+	if err := pool.Ping(ctx); err != nil {
+		log.Fatalf("Failed to ping database: %v\n", err)
+	}
 
 	repo := postgres.NewRepository(pool)
 	service := application.NewStorageService(repo, local.NewStorage(), hash.NewSHA256())
 
+	grpcServer := grpc.NewServer()
+	serverImpl := server.NewStorageServer(service)
+
+	types.RegisterStorageServiceServer(grpcServer, serverImpl)
+
+	// Listen all interfaces (debug mode to accept all connections) on port 50051.
+	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", "", cfg.Port))
+	if err != nil {
+		log.Fatalf("Failed to listen on port %d: %v\n", cfg.Port, err)
+	}
+
 	go func() {
-		listener, err := net.Listen("tcp", ":50051")
-		if err != nil {
-			log.Fatalf("Failed to listen on port 50051: %v\n", err)
-		}
-
-		grpcServer := grpc.NewServer()
-		serverImpl := server.NewStorageServer(service)
-
-		types.RegisterStorageServiceServer(grpcServer, serverImpl)
-
 		if err := grpcServer.Serve(listener); err != nil {
 			log.Fatalf("Failed to serve gRPC server: %v\n", err)
 		}
@@ -62,5 +67,9 @@ func main() {
 
 	// Waiting for SIGINT (pkill -2) or SIGTERM
 	<-stop
+
+	// Graceful shutdown
+	grpcServer.GracefulStop()
+
 	log.Println("Received shutdown signal, stopping server...")
 }
