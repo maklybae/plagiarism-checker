@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 	"github.com/maklybae/plagiarism-checker/grpcgw/internal/config"
 	"github.com/maklybae/plagiarism-checker/grpcgw/internal/server"
 	"github.com/maklybae/plagiarism-checker/grpcgw/internal/types"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -49,6 +52,11 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
+
+	// OpenAPI documentation and Swagger UI setup
+	oapiPath := filepath.Join("..", "openapi", "v1", "api.yaml")
+	r.StaticFile("/swagger.yaml", oapiPath)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.URL("/swagger.yaml")))
 
 	types.RegisterHandlersWithOptions(r, h, types.GinServerOptions{
 		BaseURL: "",

@@ -26,6 +26,7 @@ COPY --from=builder /usr/share/zoneinfo/UTC /usr/share/zoneinfo/UTC
 ENV TZ UTC
 
 WORKDIR /app
+COPY openapi/v1/api.yaml /openapi/v1/api.yaml
 COPY --from=builder /app/main /app/main
 
 
