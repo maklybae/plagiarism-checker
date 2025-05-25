@@ -198,6 +198,190 @@ func (x *DownloadFileResponse) GetFile() *common.FileChunk {
 	return nil
 }
 
+type GetFileHashRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileId        *common.UUID           `protobuf:"bytes,1,opt,name=file_id,json=fileId,proto3" json:"file_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFileHashRequest) Reset() {
+	*x = GetFileHashRequest{}
+	mi := &file_storage_storage_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFileHashRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileHashRequest) ProtoMessage() {}
+
+func (x *GetFileHashRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_storage_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileHashRequest.ProtoReflect.Descriptor instead.
+func (*GetFileHashRequest) Descriptor() ([]byte, []int) {
+	return file_storage_storage_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetFileHashRequest) GetFileId() *common.UUID {
+	if x != nil {
+		return x.FileId
+	}
+	return nil
+}
+
+type GetFileHashResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileId        *common.UUID           `protobuf:"bytes,1,opt,name=file_id,json=fileId,proto3" json:"file_id,omitempty"`
+	Hash          string                 `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFileHashResponse) Reset() {
+	*x = GetFileHashResponse{}
+	mi := &file_storage_storage_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFileHashResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileHashResponse) ProtoMessage() {}
+
+func (x *GetFileHashResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_storage_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileHashResponse.ProtoReflect.Descriptor instead.
+func (*GetFileHashResponse) Descriptor() ([]byte, []int) {
+	return file_storage_storage_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetFileHashResponse) GetFileId() *common.UUID {
+	if x != nil {
+		return x.FileId
+	}
+	return nil
+}
+
+func (x *GetFileHashResponse) GetHash() string {
+	if x != nil {
+		return x.Hash
+	}
+	return ""
+}
+
+type ListFilesByHashRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Hash          string                 `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListFilesByHashRequest) Reset() {
+	*x = ListFilesByHashRequest{}
+	mi := &file_storage_storage_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListFilesByHashRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListFilesByHashRequest) ProtoMessage() {}
+
+func (x *ListFilesByHashRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_storage_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListFilesByHashRequest.ProtoReflect.Descriptor instead.
+func (*ListFilesByHashRequest) Descriptor() ([]byte, []int) {
+	return file_storage_storage_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListFilesByHashRequest) GetHash() string {
+	if x != nil {
+		return x.Hash
+	}
+	return ""
+}
+
+type ListFilesByHashResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileIds       []*common.UUID         `protobuf:"bytes,1,rep,name=file_ids,json=fileIds,proto3" json:"file_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListFilesByHashResponse) Reset() {
+	*x = ListFilesByHashResponse{}
+	mi := &file_storage_storage_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListFilesByHashResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListFilesByHashResponse) ProtoMessage() {}
+
+func (x *ListFilesByHashResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_storage_storage_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListFilesByHashResponse.ProtoReflect.Descriptor instead.
+func (*ListFilesByHashResponse) Descriptor() ([]byte, []int) {
+	return file_storage_storage_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ListFilesByHashResponse) GetFileIds() []*common.UUID {
+	if x != nil {
+		return x.FileIds
+	}
+	return nil
+}
+
 var File_storage_storage_proto protoreflect.FileDescriptor
 
 const file_storage_storage_proto_rawDesc = "" +
@@ -210,11 +394,22 @@ const file_storage_storage_proto_rawDesc = "" +
 	"\x13DownloadFileRequest\x12%\n" +
 	"\afile_id\x18\x01 \x01(\v2\f.common.UUIDR\x06fileId\"=\n" +
 	"\x14DownloadFileResponse\x12%\n" +
-	"\x04file\x18\x02 \x01(\v2\x11.common.FileChunkR\x04file2\xa8\x01\n" +
+	"\x04file\x18\x02 \x01(\v2\x11.common.FileChunkR\x04file\";\n" +
+	"\x12GetFileHashRequest\x12%\n" +
+	"\afile_id\x18\x01 \x01(\v2\f.common.UUIDR\x06fileId\"P\n" +
+	"\x13GetFileHashResponse\x12%\n" +
+	"\afile_id\x18\x01 \x01(\v2\f.common.UUIDR\x06fileId\x12\x12\n" +
+	"\x04hash\x18\x02 \x01(\tR\x04hash\",\n" +
+	"\x16ListFilesByHashRequest\x12\x12\n" +
+	"\x04hash\x18\x01 \x01(\tR\x04hash\"B\n" +
+	"\x17ListFilesByHashResponse\x12'\n" +
+	"\bfile_ids\x18\x01 \x03(\v2\f.common.UUIDR\afileIds2\xc8\x02\n" +
 	"\x0eStorageService\x12G\n" +
 	"\n" +
 	"UploadFile\x12\x1a.storage.UploadFileRequest\x1a\x1b.storage.UploadFileResponse(\x01\x12M\n" +
-	"\fDownloadFile\x12\x1c.storage.DownloadFileRequest\x1a\x1d.storage.DownloadFileResponse0\x01B<Z:github.com/maklybae/plagiarism-checker/genproto/go/storageb\x06proto3"
+	"\fDownloadFile\x12\x1c.storage.DownloadFileRequest\x1a\x1d.storage.DownloadFileResponse0\x01\x12H\n" +
+	"\vGetFileHash\x12\x1b.storage.GetFileHashRequest\x1a\x1c.storage.GetFileHashResponse\x12T\n" +
+	"\x0fListFilesByHash\x12\x1f.storage.ListFilesByHashRequest\x1a .storage.ListFilesByHashResponseB<Z:github.com/maklybae/plagiarism-checker/genproto/go/storageb\x06proto3"
 
 var (
 	file_storage_storage_proto_rawDescOnce sync.Once
@@ -228,29 +423,40 @@ func file_storage_storage_proto_rawDescGZIP() []byte {
 	return file_storage_storage_proto_rawDescData
 }
 
-var file_storage_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_storage_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_storage_storage_proto_goTypes = []any{
-	(*UploadFileRequest)(nil),    // 0: storage.UploadFileRequest
-	(*UploadFileResponse)(nil),   // 1: storage.UploadFileResponse
-	(*DownloadFileRequest)(nil),  // 2: storage.DownloadFileRequest
-	(*DownloadFileResponse)(nil), // 3: storage.DownloadFileResponse
-	(*common.FileChunk)(nil),     // 4: common.FileChunk
-	(*common.UUID)(nil),          // 5: common.UUID
+	(*UploadFileRequest)(nil),       // 0: storage.UploadFileRequest
+	(*UploadFileResponse)(nil),      // 1: storage.UploadFileResponse
+	(*DownloadFileRequest)(nil),     // 2: storage.DownloadFileRequest
+	(*DownloadFileResponse)(nil),    // 3: storage.DownloadFileResponse
+	(*GetFileHashRequest)(nil),      // 4: storage.GetFileHashRequest
+	(*GetFileHashResponse)(nil),     // 5: storage.GetFileHashResponse
+	(*ListFilesByHashRequest)(nil),  // 6: storage.ListFilesByHashRequest
+	(*ListFilesByHashResponse)(nil), // 7: storage.ListFilesByHashResponse
+	(*common.FileChunk)(nil),        // 8: common.FileChunk
+	(*common.UUID)(nil),             // 9: common.UUID
 }
 var file_storage_storage_proto_depIdxs = []int32{
-	4, // 0: storage.UploadFileRequest.file:type_name -> common.FileChunk
-	5, // 1: storage.UploadFileResponse.file_id:type_name -> common.UUID
-	5, // 2: storage.DownloadFileRequest.file_id:type_name -> common.UUID
-	4, // 3: storage.DownloadFileResponse.file:type_name -> common.FileChunk
-	0, // 4: storage.StorageService.UploadFile:input_type -> storage.UploadFileRequest
-	2, // 5: storage.StorageService.DownloadFile:input_type -> storage.DownloadFileRequest
-	1, // 6: storage.StorageService.UploadFile:output_type -> storage.UploadFileResponse
-	3, // 7: storage.StorageService.DownloadFile:output_type -> storage.DownloadFileResponse
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	8,  // 0: storage.UploadFileRequest.file:type_name -> common.FileChunk
+	9,  // 1: storage.UploadFileResponse.file_id:type_name -> common.UUID
+	9,  // 2: storage.DownloadFileRequest.file_id:type_name -> common.UUID
+	8,  // 3: storage.DownloadFileResponse.file:type_name -> common.FileChunk
+	9,  // 4: storage.GetFileHashRequest.file_id:type_name -> common.UUID
+	9,  // 5: storage.GetFileHashResponse.file_id:type_name -> common.UUID
+	9,  // 6: storage.ListFilesByHashResponse.file_ids:type_name -> common.UUID
+	0,  // 7: storage.StorageService.UploadFile:input_type -> storage.UploadFileRequest
+	2,  // 8: storage.StorageService.DownloadFile:input_type -> storage.DownloadFileRequest
+	4,  // 9: storage.StorageService.GetFileHash:input_type -> storage.GetFileHashRequest
+	6,  // 10: storage.StorageService.ListFilesByHash:input_type -> storage.ListFilesByHashRequest
+	1,  // 11: storage.StorageService.UploadFile:output_type -> storage.UploadFileResponse
+	3,  // 12: storage.StorageService.DownloadFile:output_type -> storage.DownloadFileResponse
+	5,  // 13: storage.StorageService.GetFileHash:output_type -> storage.GetFileHashResponse
+	7,  // 14: storage.StorageService.ListFilesByHash:output_type -> storage.ListFilesByHashResponse
+	11, // [11:15] is the sub-list for method output_type
+	7,  // [7:11] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_storage_storage_proto_init() }
@@ -264,7 +470,7 @@ func file_storage_storage_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_storage_storage_proto_rawDesc), len(file_storage_storage_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

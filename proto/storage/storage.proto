@@ -14,7 +14,20 @@ message DownloadFileRequest { common.UUID file_id = 1; }
 
 message DownloadFileResponse { common.FileChunk file = 2; }
 
+message GetFileHashRequest { common.UUID file_id = 1; }
+
+message GetFileHashResponse {
+  common.UUID file_id = 1;
+  string hash = 2;
+}
+
+message ListFilesByHashRequest { string hash = 1; }
+
+message ListFilesByHashResponse { repeated common.UUID file_ids = 1; }
+
 service StorageService {
   rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse);
   rpc DownloadFile(DownloadFileRequest) returns (stream DownloadFileResponse);
+  rpc GetFileHash(GetFileHashRequest) returns (GetFileHashResponse);
+  rpc ListFilesByHash(ListFilesByHashRequest) returns (ListFilesByHashResponse);
 }
