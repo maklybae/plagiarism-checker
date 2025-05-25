@@ -1,14 +1,14 @@
 services:
   analysis:
     build:
-      context: ./analysis
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: analysis/Dockerfile
     depends_on:
       - analysis_db
     env_file:
       - ./analysis/.env
     ports:
-      - "8081:8080"
+      - "8081:50051"
     profiles: [ "analysis-only", "prod" ]
 
   analysis_db:
@@ -23,14 +23,14 @@ services:
 
   storage:
     build:
-      context: ./storage
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: storage/Dockerfile
     depends_on:
       - storage_db
     env_file:
       - ./storage/.env
     ports:
-      - "8082:8080"
+      - "8082:50051"
     profiles: [ "storage-only", "prod" ]
 
   storage_db:

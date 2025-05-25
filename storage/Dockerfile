@@ -9,10 +9,12 @@ RUN apk update --no-cache && apk add --no-cache tzdata
 
 WORKDIR /build
 
-ADD go.mod .
-ADD go.sum .
+COPY genproto/go genproto/go
+WORKDIR /build/storage
+ADD storage/go.mod .
+ADD storage/go.sum .
 RUN go mod download
-COPY . .
+COPY storage/ .
 
 RUN go build -ldflags="-s -w" -o /app/storage cmd/storage/main.go
 
