@@ -26,3 +26,14 @@ docker compose --profile prod up
 Пример того, как выглядит облако слов на произвольной программе на языке `C`:
 
 ![wordcloud](static/wordcloud.png)
+
+## test coverage
+
+Написаны тесты для бизнес-логики каждого микросервиса, интеграционные тесты для `storage` и `analysis` не проводились.
+
+```bash
+$ go test -cover ./storage/internal/application/... -race
+ok      github.com/maklybae/plagiarism-checker/storage/internal/application     1.188s  coverage: 90.7% of statements
+        github.com/maklybae/plagiarism-checker/storage/internal/application/mocks               coverage: 0.0% of statements
+```
+

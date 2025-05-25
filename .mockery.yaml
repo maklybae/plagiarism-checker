@@ -1,0 +1,23 @@
+dir: "{{.InterfaceDir}}/mocks"
+filename: "{{.InterfaceName | snakecase}}.go"
+structname: "{{.InterfaceName | firstUpper}}"
+pkgname: mocks
+packages:
+  github.com/maklybae/plagiarism-checker/storage/internal/domain:
+    interfaces:
+      Repository:
+      Storage:
+  github.com/maklybae/plagiarism-checker/storage/internal/application:
+    interfaces:
+      HashProvider:
+  github.com/maklybae/plagiarism-checker/analysis/internal/domain:
+    interfaces:
+      Repository:
+      WordcloudStorage:
+  github.com/maklybae/plagiarism-checker/analysis/internal/application:
+    interfaces:
+      WordcloudClient:
+  github.com/maklybae/plagiarism-checker/genproto/go/storage:
+    interfaces:
+      StorageServiceClient:
+      StorageService_DownloadFileServer:
