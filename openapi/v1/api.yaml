@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: Plagiarism Checker API
+  version: 1.0.0
+  description: |
+    HTTP gateway service for the plagiarism-checker system.
+  contact:
+    name: Maksim Klychkov
+servers:
+  - url: http://localhost:8080
+    description: Local gRPC Gateway
+paths:
+  /api/v1/analysis/single:
+    post:
+      summary: Analyze a single file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_id:
+                  type: string
+                  format: uuid
+                  description: File UUID
+              required: [file_id]
+      responses:
+        '200':
+          description: File statistics and exact matches
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_id:
+                    type: string
+                    format: uuid
+                  statistics:
+                    type: object
+                    properties:
+                      total_lines: { type: integer }
+                      total_words: { type: integer }
+                      total_characters: { type: integer }
+                  exact_matches:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /api/v1/analysis/diff:
+    post:
+      summary: Compare two files
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_id_a:
+                  type: string
+                  format: uuid
+                file_id_b:
+                  type: string
+                  format: uuid
+              required: [file_id_a, file_id_b]
+      responses:
+        '200':
+          description: Similarity metric
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_id_a:
+                    type: string
+                    format: uuid
+                  file_id_b:
+                    type: string
+                    format: uuid
+                  similarity:
+                    type: number
+                    format: float
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /api/v1/analysis/wordcloud:
+    post:
+      summary: Generate wordcloud for a file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_id:
+                  type: string
+                  format: uuid
+              required: [file_id]
+      responses:
+        '200':
+          description: PNG wordcloud image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /api/v1/storage:
+    post:
+      summary: Upload a file
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Uploaded file ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_id:
+                    type: string
+                    format: uuid
+        '400': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+    get:
+      summary: Download a file
+      parameters:
+        - in: query
+          name: file_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: File content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+components:
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: HTTP status code
+              message:
+                type: string
+                description: Error message

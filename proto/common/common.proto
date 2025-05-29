@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/maklybae/plagiarism-checker/genproto/go/common";
+
+message UUID { string value = 1; }
+
+message FileChunk { bytes content = 1; }

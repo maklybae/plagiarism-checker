@@ -1,0 +1,73 @@
+services:
+  analysis:
+    build:
+      context: .
+      dockerfile: analysis/Dockerfile
+    depends_on:
+      analysis_db:
+        condition: service_healthy
+    env_file:
+      - ./analysis/.env
+    ports:
+      - "8081:50051"
+    profiles: [ "analysis-only", "prod", "grpc-only" ]
+
+  analysis_db:
+    image: postgres:16
+    env_file:
+      - ./analysis/.env.db
+    ports:
+      - "5433:5432"
+    volumes:
+      - analysis_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d analysis" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles: [ "db-only", "analysis-only", "prod", "grpc-only" ]
+
+  storage:
+    build:
+      context: .
+      dockerfile: storage/Dockerfile
+    depends_on:
+      storage_db:
+        condition: service_healthy
+    env_file:
+      - ./storage/.env
+    ports:
+      - "8082:50051"
+    profiles: [ "storage-only", "prod", "grpc-only" ]
+
+  storage_db:
+    image: postgres:16
+    env_file:
+      - ./storage/.env.db
+    ports:
+      - "5434:5432"
+    volumes:
+      - storage_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d storage" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles: [ "db-only", "storage-only", "prod", "grpc-only" ]
+
+  grpcgw:
+    build:
+      context: .
+      dockerfile: grpcgw/Dockerfile
+    depends_on:
+      - analysis
+      - storage
+    env_file:
+      - ./grpcgw/.env
+    ports:
+      - "8080:8080"
+    profiles: [ "prod" ]
+
+volumes:
+  analysis_db_data:
+  storage_db_data:
